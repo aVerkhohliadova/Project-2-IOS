@@ -13,6 +13,7 @@
 		5AB7B6F029DA6F0800DAD4CF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5AB7B6EE29DA6F0800DAD4CF /* Main.storyboard */; };
 		5AB7B6F229DA6F0900DAD4CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5AB7B6F129DA6F0900DAD4CF /* Assets.xcassets */; };
 		5AB7B6F529DA6F0900DAD4CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5AB7B6F329DA6F0900DAD4CF /* LaunchScreen.storyboard */; };
+		5AB7B6FD29DAE10A00DAD4CF /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB7B6FC29DAE10A00DAD4CF /* DetailsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		5AB7B6F129DA6F0900DAD4CF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5AB7B6F429DA6F0900DAD4CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5AB7B6F629DA6F0900DAD4CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5AB7B6FC29DAE10A00DAD4CF /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 				5AB7B6E829DA6F0800DAD4CF /* AppDelegate.swift */,
 				5AB7B6EA29DA6F0800DAD4CF /* SceneDelegate.swift */,
 				5AB7B6EC29DA6F0800DAD4CF /* ViewController.swift */,
+				5AB7B6FC29DAE10A00DAD4CF /* DetailsViewController.swift */,
 				5AB7B6EE29DA6F0800DAD4CF /* Main.storyboard */,
 				5AB7B6F129DA6F0900DAD4CF /* Assets.xcassets */,
 				5AB7B6F329DA6F0900DAD4CF /* LaunchScreen.storyboard */,
@@ -141,6 +144,7 @@
 				5AB7B6ED29DA6F0800DAD4CF /* ViewController.swift in Sources */,
 				5AB7B6E929DA6F0800DAD4CF /* AppDelegate.swift in Sources */,
 				5AB7B6EB29DA6F0800DAD4CF /* SceneDelegate.swift in Sources */,
+				5AB7B6FD29DAE10A00DAD4CF /* DetailsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
