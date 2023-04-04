@@ -7,80 +7,40 @@
 
 import UIKit
 import MapKit
+import Foundation
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
     //lan 42.983612
     //lon -81.249725
     
-    let codeToSymbolColor: [Int: (symbol: String, colors: [UIColor])] = [
-        1000: ("sun.max", [.systemOrange, .systemYellow]), // Sunny
-        1003: ("cloud.sun.fill", [.systemCyan, .systemOrange]), // Partly cloudy
-        1006: ("cloud.fill", [.systemCyan, .systemOrange]), // Cloudy
-        1009: ("cloud.fill", [.systemCyan, .systemOrange]), // Overcast
-        1030: ("cloud.fog.fill", [.systemCyan, .systemBlue]), // Mist
-        1063: ("cloud.rain.fill", [.systemCyan, .systemBlue]), // Patchy rain possible
-        1066: ("cloud.snow.fill", [.systemCyan, .systemBlue]), // Patchy snow possible
-        1069: ("cloud.sleet.fill", [.systemCyan, .systemBlue]), // Patchy sleet possible
-        1072: ("cloud.sleet.fill", [.systemCyan, .systemBlue]), // Patchy freezing drizzle possible
-        1087: ("cloud.bolt.fill", [.systemCyan, .systemYellow]), // Thundery outbreaks possible
-        1114: ("wind.snow", [.systemCyan, .systemBlue]), // Blowing snow
-        1117: ("wind.snow", [.systemCyan, .systemBlue]), // Blizzard
-        1135: ("cloud.fog.fill", [.systemCyan, .systemBlue]), // Fog
-        1147: ("cloud.fog.fill", [.systemCyan, .systemBlue]), // Freezing fog
-        1150: ("cloud.drizzle", [.systemCyan, .systemBlue]), // Patchy light drizzle
-        1153: ("cloud.drizzle.fill", [.systemCyan, .systemBlue]), // Light drizzle
-        1168: ("cloud.sleet.fill", [.systemCyan, .systemBlue]), // Freezing drizzle
-        1171: ("cloud.sleet.fill", [.systemCyan, .systemBlue]), // Heavy freezing drizzle
-        1180: ("cloud.drizzle", [.systemCyan, .systemBlue]), // Patchy light rain
-        1183: ("cloud.drizzle", [.systemCyan, .systemBlue]), // Light rain
-        1186: ("cloud.rain.fill", [.systemCyan, .systemBlue]), // Moderate rain at times
-        1189: ("cloud.rain.fill", [.systemCyan, .systemBlue]), // Moderate rain
-        1192: ("cloud.heavyrain.fill", [.systemCyan, .systemBlue]), // Heavy rain at times
-        1195: ("cloud.heavyrain.fill", [.systemCyan, .systemBlue]), // Heavy rain
-        1198: ("cloud.sleet", [.systemCyan, .systemBlue]), // Light freezing rain
-        1201: ("cloud.sleet.fill", [.systemCyan, .systemBlue]), // Moderate or heavy freezing rain
-        1204: ("cloud.sleet", [.systemCyan, .systemBlue]), // Light sleet
-        1207: ("cloud.sleet.fill", [.systemCyan, .systemBlue]), // Moderate or heavy sleet
-        1210: ("cloud.snow", [.systemCyan, .systemBlue]), // Patchy light snow
-        1213: ("cloud.snow", [.systemCyan, .systemBlue]), // Light snow
-        1216: ("cloud.snow.fill", [.systemCyan, .systemBlue]), // Patchy moderate snow
-        1219: ("cloud.snow.fill", [.systemCyan, .systemBlue]), // Moderate snow
-        1222: ("cloud.snow.fill", [.systemCyan, .systemBlue]), // Patchy heavy snow
-        1225: ("cloud.snow.fill", [.systemCyan, .systemBlue]), // Heavy snow
-        1237: ("aqi.low", [.systemCyan, .systemBlue]), // Ice pellets
-        1240: ("cloud.drizzle", [.systemCyan, .systemBlue]), // Light rain shower
-        1243: ("cloud.rain.fill", [.systemCyan, .systemBlue]), // Moderate or heavy rain shower
-        1246: ("cloud.rain.fill", [.systemCyan, .systemBlue]), // Torrential rain shower
-        1249: ("cloud.sleet", [.systemCyan, .systemBlue]), // Light sleet showers
-        1252: ("cloud.sleet.fill", [.systemCyan, .systemBlue]), // Moderate or heavy sleet showers
-        1255: ("cloud.snow", [.systemCyan, .systemBlue]), // Light snow showers
-        1258: ("cloud.snow.fill", [.systemCyan, .systemBlue]), // Moderate or heavy snow showers
-        1261: ("aqi.low", [.systemCyan, .systemBlue]), // Light showers of ice pellets
-        1264: ("aqi.medium", [.systemCyan, .systemBlue]), // Moderate or heavy showers of ice pellets
-        1273: ("cloud.bolt.rain", [.systemCyan, .systemBlue]), // Patchy light rain with thunder
-        1276: ("cloud.bolt.rain.fill", [.systemCyan, .systemBlue]), // Moderate or heavy rain with thunder
-        1279: ("cloud.bolt.", [.systemCyan, .systemBlue]), // Patchy light snow with thunder
-        1282: ("cloud.bolt.fill", [.systemCyan, .systemBlue]) // Moderate or heavy snow with thunder
-    ]
+    
 
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var tableView: UITableView!
     
     let locationManager = CLLocationManager()
     
     var currentLocation: CLLocationCoordinate2D?
+    
+    private var items: [LocationList] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
 //        locationManager.requestWhenInUseAuthorization()
         locationManager.delegate = self
-        
-//        setupMap()
-//        locationManager.requestWhenInUseAuthorization()
-//        addAnnotation(location: getLondonLocation())
-//        addAnnotation()
+        loadDefaultItems()
+        tableView.delegate = self
+        tableView.dataSource = self
     }
+    
+    private func loadDefaultItems(){
+        items.append(LocationList(title: "Lviv", subtitle: "12C(H:15,L:3)", icon: UIImage(systemName: "cloud")))
+//        items.append(ItemToDo(title: "Item 2", description: "Description 2", icon: UIImage(systemName: "drop")))
+//        items.append(ItemToDo(title: "Item 3", description: "Description 3", icon: UIImage(systemName: "pawprint")))
+    }
+
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
             switch status {
@@ -106,30 +66,38 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         setupMap()
         
         //loading current Weather and annotation
-        loadCurrentWeather(search: "", location: location.coordinate)
+        loadCurrentWeather(search: nil, location: location.coordinate)
         
-//        addAnnotation()
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Location error::: \(error.localizedDescription)")
     }
 
-    private func setupMap(){
+    private func setupMap() {
         print("setupMap")
         //set delegate
         mapView.delegate = self
         
+//        let locationCoordinates = getLatAndLong(name: name ?? "")
+//        let locationCoordinates = try await getLatAndLong(name: name ?? "")
+
+        
         //enable showing user location on map
-        mapView.showsUserLocation = true
+//        mapView.showsUserLocation = true
         
         guard let location = currentLocation else {
             return
         }
         
         let radiusInMeters: CLLocationDistance = 10000
+//        let region: MKCoordinateRegion
         
-        let region = MKCoordinateRegion(center: location, latitudinalMeters: radiusInMeters, longitudinalMeters: radiusInMeters)
+//        if name != nil{
+            let region = MKCoordinateRegion(center: location, latitudinalMeters: radiusInMeters, longitudinalMeters: radiusInMeters)
+//        } else {
+//            region = MKCoordinateRegion(center: locationOnMap, latitudinalMeters: radiusInMeters, longitudinalMeters: radiusInMeters)
+//        }
         
         mapView.setRegion(region, animated: true)
         
@@ -143,9 +111,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         
     }
     
+    @IBAction func addLocationTapped(_ sender: UIBarButtonItem) {
+        
+    }
+    
     func loadCurrentWeather(search: String?, location: CLLocationCoordinate2D) {
         // Step 1: Getting URL
-        guard let url = getURL(query: search ?? "", latitude: location.latitude, longitude: location.longitude) else {
+        guard let url = getURL(query: search ?? "", latitude: location.latitude, longitude: location.longitude, days: 1) else {
             print("Could not get URL")
             return
         }
@@ -168,20 +140,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             }
             
             if let weatherResponse = parseJSON(data: data) {
-                print(weatherResponse.location.name)
-                print(weatherResponse.current.temp_c)
-                print(weatherResponse.current.condition.text)
                 
-                let annotation = MyAnnotation(
-                    coordinate: location,
-                    title: weatherResponse.current.condition.text, // current weather condition
-                    tempDescription: "Temperature: \(weatherResponse.current.temp_c)ºC \nFeels like: \(weatherResponse.current.feelslike_c)ºC",
-//                    subtitle: "Temperature: \(weatherResponse.current.temp_c)ºC \n Feels like: \(weatherResponse.current.feelslike_c)ºC",
-                    glyphText: "\(weatherResponse.current.temp_c)ºC",
-                    code: weatherResponse.current.condition.code
-                )
-                
-                mapView.addAnnotation(annotation)
+                if search != nil {
+                    let annotation = MyAnnotation(
+                        coordinate: CLLocationCoordinate2D(latitude: weatherResponse.location.lat, longitude: weatherResponse.location.lon),
+                        title: weatherResponse.current.condition.text, // current weather condition
+                        tempDescription: "Temperature: \(weatherResponse.current.temp_c)ºC \nFeels like: \(weatherResponse.current.feelslike_c)ºC",
+                        glyphText: "\(weatherResponse.current.temp_c)ºC",
+                        code: weatherResponse.current.condition.code
+                    )
+                    mapView.addAnnotation(annotation)
+                } else {
+                    let annotation = MyAnnotation(
+                        coordinate: location,
+                        title: weatherResponse.current.condition.text, // current weather condition
+                        tempDescription: "Temperature: \(weatherResponse.current.temp_c)ºC \nFeels like: \(weatherResponse.current.feelslike_c)ºC",
+                        glyphText: "\(weatherResponse.current.temp_c)ºC",
+                        code: weatherResponse.current.condition.code
+                    )
+                    mapView.addAnnotation(annotation)
+                }
                 
             }
         }
@@ -189,39 +167,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Step 4: Start the task
         dataTask.resume()
     }
-
-
-    private func getURL(query: String, latitude: Double, longitude: Double) -> URL? {
-        let baseURL = "https://api.weatherapi.com/v1/"
-        let currentEndpoint = "current.json"
-        let apiKey = "c157243c17f94c8495673213231303"
-//        let query = "q=Toronto"
-        let aqi = "aqi=no"
-        
-        var url: String
-        
-        if query != "" {
-            url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(String(describing: query))&\(aqi)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        } else {
-            url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(latitude),\(longitude)&\(aqi)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        }
-        
-        print(url)
-        return URL(string: url)
-    }
     
-    private func parseJSON(data: Data) -> WeatherResponse? {
-        // Decode the data
-        let decoder = JSONDecoder()
-        var weather: WeatherResponse?
-        
-        do{
-            weather = try decoder.decode(WeatherResponse.self, from: data)
-        } catch {
-            print("Error decoding: \(error.localizedDescription)")
-        }
-        return weather
-    }
 }
 
 extension ViewController: MKMapViewDelegate {
@@ -248,13 +194,10 @@ extension ViewController: MKMapViewDelegate {
             view.rightCalloutAccessoryView = button
             
             
-
-            
             if let myAnnotation = annotation as? MyAnnotation {
                 view.glyphText = myAnnotation.glyphText
                 print(view.glyphText!.replacingOccurrences(of: "ºC", with: ""))
                 if let glyphText = myAnnotation.glyphText?.replacingOccurrences(of: "ºC", with: ""), let temperature = Float(glyphText) {
-//                    print(temperature)
                     switch temperature {
                     case 35...:
                         view.markerTintColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
@@ -299,24 +242,6 @@ extension ViewController: MKMapViewDelegate {
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-//        print("Button clicked! \(control.tag)")
-//
-//        guard let coordinates = view.annotation?.coordinate else {
-//            return
-//        }
-//
-//        let launchOptions = [ MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeWalking ]
-//
-//        func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//            if segue.identifier == "goToDetails"{
-//                let viewController = segue.destination as! DetailsViewController
-//                viewController.labelMessage = "Hello there"
-//            }
-//        }
-//
-////        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinates))
-////        mapItem.openInMaps(launchOptions: launchOptions)
-//    }
     if control == view.rightCalloutAccessoryView {
             performSegue(withIdentifier: "goToDetails", sender: view)
         }
@@ -325,53 +250,194 @@ extension ViewController: MKMapViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "goToDetails" {
             if let viewController = segue.destination as? DetailsViewController, let annotationView = sender as? MKAnnotationView, let annotation = annotationView.annotation as? MyAnnotation {
-                viewController.labelMessage = annotation.title ?? ""
+                viewController.labelMessage = "\(annotation.coordinate.latitude), \(annotation.coordinate.longitude)"
+//                viewController. = annotation.title ?? ""
             }
         }
     }
 }
 
+extension ViewController: UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return items.count
+    }
     
-
-class MyAnnotation: NSObject, MKAnnotation {
-    var coordinate: CLLocationCoordinate2D
-    var title: String?
-//    var subtitle: String?
-    var tempDescription: String?
-    var glyphText: String?
-    var code: Int
-    
-    init(coordinate: CLLocationCoordinate2D, title: String, tempDescription: String? = nil, glyphText: String?, code: Int){
-        self.coordinate = coordinate
-        self.title = title
-//        self.subtitle = subtitle
-        self.tempDescription = tempDescription
-        self.glyphText = glyphText
-        self.code = code
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "locationCell", for: indexPath)
+        let item = items[indexPath.row]
         
-        super.init()
+        var content = cell.defaultContentConfiguration()
+        content.text = item.title
+        content.secondaryText = item.subtitle
+        content.image = item.icon
+        
+        cell.contentConfiguration = content
+        
+        return cell
     }
 }
 
-struct WeatherResponse: Decodable {
-    let location: Location
-    let current: Weather
+extension ViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        // Get the selected item and its location
+        let selectedItem = items[indexPath.row]
+        let locationCoordinate = getLatAndLong(name: selectedItem.title)
+        
+        let region = MKCoordinateRegion(center: locationCoordinate, latitudinalMeters: 10000, longitudinalMeters: 10000) // adjust the zoom level as needed
+        mapView.setRegion(region, animated: true)
+    }
+        
+
+//        Task {
+//                // Get the location coordinates asynchronously
+////            let locationCoordinates = await getLatAndLong(name: selectedItem.title)
+//
+//                // Update the map and weather
+//                DispatchQueue.main.async {
+//                    self.setupMap(name: selectedItem.title, locationOnMap: <#T##CLLocationCoordinate2D#>)
+//                    self.loadCurrentWeather(search: "", location: locationCoordinates)
+//                }
+//            }
+//    }
+    
+//    internal func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        tableView.deselectRow(at: indexPath, animated: true)
+//
+//        // Get the selected item
+//        let selectedItem = items[indexPath.row]
+//
+//        Task {
+//            // Get the location coordinates asynchronously
+//            print("\n")
+////            let locationCoordinates = try await getLatAndLong(name: selectedItem.title)
+//
+//            // Update the map and weather
+//            DispatchQueue.main.async {
+//                try self.setupMap(name: selectedItem.title, locationOnMap: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0))
+////                self.loadCurrentWeather(search: "", location: locationCoordinates)
+//            }
+//        }
+//    }
+    
+    func getLatAndLong(name: String) -> CLLocationCoordinate2D {
+        guard let url = getURL(query: name, latitude: 0.0, longitude: 0.0, days: 1) else {
+            print("Could not get URL")
+            return CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
+        }
+        
+        let session = URLSession.shared
+        
+        var location = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
+        
+        let dataTask = session.dataTask(with: url) { [self] data, response, error in
+            print("Network call complete")
+            
+            guard error == nil else {
+                print("Received error")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data found")
+                return
+            }
+            
+            if let weatherResponse = parseJSON(data: data) {
+                print(weatherResponse.location.lat)
+                
+                DispatchQueue.main.async {
+                    location.latitude = weatherResponse.location.lat
+                    location.longitude = weatherResponse.location.lon
+                    print("inside \(location)")
+                }
+            }
+        }
+        
+        dataTask.resume()
+        print(location)
+        return location
+    }
+
+    
+//    func getLatAndLong(name: String, completion: @escaping (Result<CLLocationCoordinate2D, Error>) -> Void) {
+//        guard let url = getURL(query: name, latitude: 0.0, longitude: 0.0, days: 1) else {
+//            print("Could not get URL")
+//            completion(.failure(NSError(domain: "com.example.app", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not get URL"])))
+//            return
+//        }
+//
+//        let session = URLSession.shared
+//
+//        let dataTask = session.dataTask(with: url) { [self] data, response, error in
+//            print("Network call complete")
+//
+//            if let error = error {
+//                print("Received error")
+//                completion(.failure(error))
+//                return
+//            }
+//
+//            guard let data = data else {
+//                print("No data found")
+//                completion(.failure(NSError(domain: "com.example.app", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data found"])))
+//                return
+//            }
+//
+//            if let weatherResponse = parseJSON(data: data) {
+//                print(weatherResponse.location.lat)
+//                let location = CLLocationCoordinate2D(latitude: weatherResponse.location.lat, longitude: weatherResponse.location.lon)
+//                completion(.success(location))
+//            }
+//        }
+//        // Step 4: Start the task
+//        dataTask.resume()
+//    }
+
+    
+//    func getLatAndLong(name: String) -> CLLocationCoordinate2D {
+//
+//        print("getLatAndLong \(name)")
+//
+//        guard let url = getURL(query: name, latitude: 0.0, longitude: 0.0, days: 1) else {
+//            print("Could not get URL")
+//            return CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
+//        }
+//        let session = URLSession.shared
+//
+//        var location: CLLocationCoordinate2D// = CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
+//
+//        let dataTask = session.dataTask(with: url) { [self] data, response, error in
+//            print("Network call complete")
+//
+//            guard error == nil else {
+//                print("Received error")
+//                return
+//            }
+//
+//            guard let data = data else {
+//                print("No data found")
+//                return
+//            }
+//
+//            if let weatherResponse = parseJSON(data: data) {
+//                print(weatherResponse.location.lat)
+//
+//                DispatchQueue.main.async { [] in
+//                    location.latitude = weatherResponse.location.lat
+//                    location.longitude = weatherResponse.location.lon
+//                }
+//            }
+//        }
+//        // Step 4: Start the task
+//        dataTask.resume()
+//        print("getLatAndLong \(location)")
+//        return location
+//    }
 }
 
-struct Location: Decodable {
-    let name: String
-}
 
-struct Weather: Decodable {
-    let temp_c: Float
-    let temp_f: Float
-    let condition: WeatherCondition
-    let feelslike_c: Float
-}
 
-struct WeatherCondition: Decodable {
-    let text: String
-    let code: Int
-}
 
 
