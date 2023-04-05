@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import UIKit
 import MapKit
+import UIKit
 
 let codeToSymbolColor: [Int: (symbol: String, colors: [UIColor])] = [
     1000: ("sun.max", [.systemOrange, .systemYellow]), // Sunny
@@ -66,15 +66,15 @@ func getURL(query: String, latitude: Double, longitude: Double, days: Int) -> UR
     let apiKey = "025077f00dee46fca8e94317230404"
     let aqi = "aqi=no"
     let alerts = "alerts=no"
-    
+
     var url: String
-    
+
     if query != "" {
         url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(String(describing: query))&days=\(days)&\(aqi)&\(alerts)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
     } else {
         url = "\(baseURL)\(currentEndpoint)?key=\(apiKey)&q=\(latitude),\(longitude)&days=\(days)&\(aqi)&\(alerts)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
     }
-    
+
     print(url)
     return URL(string: url)
 }
@@ -83,8 +83,8 @@ func parseJSON(data: Data) -> WeatherResponse? {
     // Decode the data
     let decoder = JSONDecoder()
     var weather: WeatherResponse?
-    
-    do{
+
+    do {
         weather = try decoder.decode(WeatherResponse.self, from: data)
     } catch {
         print("Error decoding: \(error.localizedDescription)")
@@ -98,14 +98,14 @@ class MyAnnotation: NSObject, MKAnnotation {
     var tempDescription: String?
     var glyphText: String?
     var code: Int
-    
-    init(coordinate: CLLocationCoordinate2D, title: String, tempDescription: String? = nil, glyphText: String?, code: Int){
+
+    init(coordinate: CLLocationCoordinate2D, title: String, tempDescription: String? = nil, glyphText: String?, code: Int) {
         self.coordinate = coordinate
         self.title = title
         self.tempDescription = tempDescription
         self.glyphText = glyphText
         self.code = code
-        
+
         super.init()
     }
 }
@@ -151,16 +151,13 @@ struct WeatherCondition: Decodable {
     let code: Int
 }
 
-
-
-struct LocationList{
-    let title: String
-    let subtitle: String
+struct LocationList {
+    let name: String
+    let temperature: String
     let icon: UIImage?
 }
 
-
-struct DayByDayForecast{
+struct DayByDayForecast {
     let dayWeek: String
     let temperature: String
     let icon: UIImage?

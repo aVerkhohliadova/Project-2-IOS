@@ -8,16 +8,15 @@
 import UIKit
 
 class DetailsViewController: UIViewController {
-
     var labelMessage: String?
     
-    @IBOutlet weak var cityLabel: UILabel!
-    @IBOutlet weak var temperatureLabel: UILabel!
-    @IBOutlet weak var weatherConditionLabel: UILabel!
-    @IBOutlet weak var HighTemperatureLabel: UILabel!
-    @IBOutlet weak var LowTemperatureLabel: UILabel!
+    @IBOutlet var cityLabel: UILabel!
+    @IBOutlet var temperatureLabel: UILabel!
+    @IBOutlet var weatherConditionLabel: UILabel!
+    @IBOutlet var HighTemperatureLabel: UILabel!
+    @IBOutlet var LowTemperatureLabel: UILabel!
     
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet var tableView: UITableView!
     
     private var items: [DayByDayForecast] = []
     var dayWeek: [String] = []
@@ -27,7 +26,7 @@ class DetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let message = labelMessage{
+        if let message = labelMessage {
             cityLabel.text = message
         }
 //        loadForecastItems()
@@ -36,7 +35,6 @@ class DetailsViewController: UIViewController {
         loadCurrentInfo(days: 7)
         
         tableView.dataSource = self
-
     }
     
     @IBAction func cancelDetailsScreen(_ sender: UIBarButtonItem) {
@@ -44,7 +42,7 @@ class DetailsViewController: UIViewController {
     }
     
     private func loadForecastItems() {
-        for i in 0..<dayWeek.count{
+        for i in 0 ..< dayWeek.count {
             items.append(DayByDayForecast(dayWeek: dayWeek[i],
                                           temperature: temperature[i],
                                           icon: UIImage(systemName: codeToSymbolColor[iconCode[i]]?.symbol ?? "")))
@@ -52,7 +50,7 @@ class DetailsViewController: UIViewController {
         }
     }
     
-    func loadCurrentInfo(days: Int){
+    func loadCurrentInfo(days: Int) {
         let location = cityLabel.text?.components(separatedBy: ", ")
         
         guard let url = getURL(query: "", latitude: Double(location?[0] ?? "0.0") ?? 0.0, longitude: Double(location?[1] ?? "0.0") ?? 0.0, days: days) else {
@@ -64,7 +62,7 @@ class DetailsViewController: UIViewController {
         let session = URLSession.shared
         
         // Step 3: Create task for the session
-        let dataTask = session.dataTask(with: url) { [self] data, response, error in
+        let dataTask = session.dataTask(with: url) { [self] data, _, error in
             print("Network call complete")
             
             guard error == nil else {
@@ -78,7 +76,7 @@ class DetailsViewController: UIViewController {
             }
             
             if let weatherResponse = parseJSON(data: data) {
-                if days == 1{
+                if days == 1 {
                     fillLabelsOnTheScreen(weatherResponse: weatherResponse)
                 } else {
                     fillForecastList(weatherResponse: weatherResponse)
@@ -89,7 +87,7 @@ class DetailsViewController: UIViewController {
         dataTask.resume()
     }
     
-    func fillLabelsOnTheScreen(weatherResponse: WeatherResponse){
+    func fillLabelsOnTheScreen(weatherResponse: WeatherResponse) {
         DispatchQueue.main.async { [self] in
             cityLabel.text = weatherResponse.location.name
             temperatureLabel.text = "\(weatherResponse.current.temp_c)ºC"
@@ -103,14 +101,14 @@ class DetailsViewController: UIViewController {
         DispatchQueue.main.async { [self] in
             for forecastDay in weatherResponse.forecast.forecastday {
                 dayWeek.append(dateToWeekday(forecastDate: forecastDay.date))
-                temperature.append("\(forecastDay.day.avgtemp_c)ºC")
+                temperature.append("\(forecastDay.day.maxtemp_c)ºC")
                 iconCode.append(forecastDay.day.condition.code)
             }
             loadForecastItems()
         }
     }
     
-    func dateToWeekday(forecastDate: String) -> String{
+    func dateToWeekday(forecastDate: String) -> String {
         let dateString = forecastDate
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
@@ -132,7 +130,7 @@ class DetailsViewController: UIViewController {
     }
 }
 
-extension DetailsViewController: UITableViewDataSource{
+extension DetailsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
     }
@@ -140,9 +138,6 @@ extension DetailsViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "dayCell", for: indexPath)
         let item = items[indexPath.row]
-        
-//        cell.dayLabel.text = item.dayWeek
-//        cell.temperatureLabel.text = item.temperature
         
         var content = cell.defaultContentConfiguration()
         
@@ -155,4 +150,3 @@ extension DetailsViewController: UITableViewDataSource{
         return cell
     }
 }
-
