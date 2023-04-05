@@ -128,8 +128,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, AddLocationDe
         let annotation = MyAnnotation(
             coordinate: CLLocationCoordinate2D(latitude: weatherResponse.location.lat, longitude: weatherResponse.location.lon),
             title: weatherResponse.current.condition.text, // current weather condition
-            tempDescription: "Temperature: \(weatherResponse.current.temp_c)ºC \nFeels like: \(weatherResponse.current.feelslike_c)ºC",
-            glyphText: "\(weatherResponse.current.temp_c)ºC",
+            tempDescription: "Temperature: \(weatherResponse.current.tempCelsium)ºC \nFeels like: \(weatherResponse.current.feelsLikeCelsium)ºC",
+            glyphText: "\(weatherResponse.current.tempCelsium)ºC",
             code: weatherResponse.current.condition.code
         )
         mapView.addAnnotation(annotation)
@@ -139,8 +139,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, AddLocationDe
         let annotation = MyAnnotation(
             coordinate: CLLocationCoordinate2D(latitude: weatherResponse.location.lat, longitude: weatherResponse.location.lon),
             title: weatherResponse.current.condition.text, // current weather condition
-            tempDescription: "Temperature: \(weatherResponse.current.temp_c)ºC \nFeels like: \(weatherResponse.current.feelslike_c)ºC",
-            glyphText: "\(weatherResponse.current.temp_c)ºC",
+            tempDescription: "Temperature: \(weatherResponse.current.tempCelsium)ºC \nFeels like: \(weatherResponse.current.feelsLikeCelsium)ºC",
+            glyphText: "\(weatherResponse.current.tempCelsium)ºC",
             code: weatherResponse.current.condition.code
         )
         mapView.addAnnotation(annotation)
@@ -149,7 +149,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, AddLocationDe
     private func fillListOfLocations(weatherResponse: WeatherResponse) {
         DispatchQueue.main.async { [self] in
             items.append(LocationList(name: weatherResponse.location.name,
-                                      temperature: "\(weatherResponse.current.temp_c)C (H: \(weatherResponse.forecast.forecastday[0].day.maxtemp_c) L: \(weatherResponse.forecast.forecastday[0].day.mintemp_c))",
+                                      temperature: "\(weatherResponse.current.tempCelsium)C (H: \(weatherResponse.forecast.forecastday[0].day.maxTempCelsium) L: \(weatherResponse.forecast.forecastday[0].day.minTempCelsium))",
                                       icon: UIImage(systemName: codeToSymbolColor[weatherResponse.current.condition.code]?.symbol ?? "")))
             tableView.reloadData()
         }

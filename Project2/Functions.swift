@@ -123,10 +123,17 @@ struct Location: Decodable {
 }
 
 struct Weather: Decodable {
-    let temp_c: Float
-    let temp_f: Float
+    let tempCelsium: Float
+    let tempFarenheit: Float
+    let feelsLikeCelsium: Float
     let condition: WeatherCondition
-    let feelslike_c: Float
+    
+    private enum CodingKeys: String, CodingKey{
+        case tempCelsium = "temp_c"
+        case tempFarenheit = "temp_f"
+        case feelsLikeCelsium = "feelslike_c"
+        case condition
+    }
 }
 
 struct Forecast: Decodable {
@@ -135,15 +142,19 @@ struct Forecast: Decodable {
 
 struct ForecastDay: Decodable {
     let date: String
-    let date_epoch: Int
     let day: Day
 }
 
 struct Day: Decodable {
-    let maxtemp_c: Float
-    let mintemp_c: Float
-    let avgtemp_c: Float
+    let maxTempCelsium: Float
+    let minTempCelsium: Float
     let condition: WeatherCondition
+    
+    private enum CodingKeys: String, CodingKey{
+        case maxTempCelsium = "maxtemp_c"
+        case minTempCelsium = "mintemp_c"
+        case condition
+    }
 }
 
 struct WeatherCondition: Decodable {

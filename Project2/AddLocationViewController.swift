@@ -50,7 +50,7 @@ class AddLocationViewController: UIViewController, UITextFieldDelegate {
     
     func updateTemperatureLabel() {
         guard let weather = weather else { return }
-        let temperature = isMetric ? weather.temp_c : weather.temp_f
+        let temperature = isMetric ? weather.tempCelsium : weather.tempFarenheit
         let unit = isMetric ? "ºC" : "ºF"
         temperatureLabel.text = "\(temperature) \(unit)"
     }

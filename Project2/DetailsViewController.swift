@@ -13,8 +13,8 @@ class DetailsViewController: UIViewController {
     @IBOutlet var cityLabel: UILabel!
     @IBOutlet var temperatureLabel: UILabel!
     @IBOutlet var weatherConditionLabel: UILabel!
-    @IBOutlet var HighTemperatureLabel: UILabel!
-    @IBOutlet var LowTemperatureLabel: UILabel!
+    @IBOutlet var highTemperatureLabel: UILabel!
+    @IBOutlet var lowTemperatureLabel: UILabel!
     
     @IBOutlet var tableView: UITableView!
     
@@ -90,10 +90,10 @@ class DetailsViewController: UIViewController {
     func fillLabelsOnTheScreen(weatherResponse: WeatherResponse) {
         DispatchQueue.main.async { [self] in
             cityLabel.text = weatherResponse.location.name
-            temperatureLabel.text = "\(weatherResponse.current.temp_c)ºC"
+            temperatureLabel.text = "\(weatherResponse.current.tempCelsium)ºC"
             weatherConditionLabel.text = weatherResponse.current.condition.text
-            HighTemperatureLabel.text = "\(weatherResponse.forecast.forecastday[0].day.maxtemp_c)ºC"
-            LowTemperatureLabel.text = "\(weatherResponse.forecast.forecastday[0].day.mintemp_c)ºC"
+            highTemperatureLabel.text = "\(weatherResponse.forecast.forecastday[0].day.maxTempCelsium)ºC"
+            lowTemperatureLabel.text = "\(weatherResponse.forecast.forecastday[0].day.minTempCelsium)ºC"
         }
     }
     
@@ -101,7 +101,7 @@ class DetailsViewController: UIViewController {
         DispatchQueue.main.async { [self] in
             for forecastDay in weatherResponse.forecast.forecastday {
                 dayWeek.append(dateToWeekday(forecastDate: forecastDay.date))
-                temperature.append("\(forecastDay.day.maxtemp_c)ºC")
+                temperature.append("\(forecastDay.day.maxTempCelsium)ºC")
                 iconCode.append(forecastDay.day.condition.code)
             }
             loadForecastItems()
